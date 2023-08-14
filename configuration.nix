@@ -77,6 +77,9 @@ in
     # virt-manager
     libvirtd.enable = true;
     docker.enable = true;
+
+    # waydroid.enable = true;
+  	# lxd.enable = true;
   };
   # Systemd
   systemd = {
@@ -106,8 +109,8 @@ in
     # Firewall
     firewall = {
       enable = true;
-      allowedTCPPorts = [ 22 3389 ];
-      allowedUDPPorts = [ 22 3389 ];
+      #allowedTCPPorts = [ 22 3389 ];
+      #allowedUDPPorts = [ 22 3389 ];
     };
   };
 
@@ -146,13 +149,13 @@ in
 
   # Configure keymap in X11
   services.xserver = {
-    layout = "us";
-    xkbVariant = "intl";
+    layout = "be";
+    xkbVariant = "";
   };
 
   # Configure console keymap
   console = {
-    keyMap = "us-acentos";
+    keyMap = "be-latin1";
   };
 
   # Fonts
@@ -204,12 +207,14 @@ in
      wl-clipboard
      grub2
      git
+     git-lfs
      dconf2nix
      disfetch
      htop
      ncdu
      cmatrix
      wmctrl
+     fzf # search in history of commands (open terminal and press ctr + R or ctrl + T to only show session history)
      unzip
      zip
      p7zip
@@ -268,7 +273,7 @@ in
     # The list
     home.packages = with pkgs; [ 
       firefox
-      vscode
+      unstable.vscode
       flameshot
       tesseract # voor ocr
       gnome.pomodoro
@@ -276,64 +281,71 @@ in
       gnome.gnome-tweaks
       gnome.dconf-editor
       adw-gtk3
-      unigine-valley
       virt-manager
       anki-bin
-      # appimagelauncher
-      protonup-qt
-      qpwgraph
-      heroic
       signal-desktop
       element-desktop
       telegram-desktop
-      unstable.antimicrox
-      gimp
-      drawing
-      handbrake
-      audacity
-      inkscape
-      onlyoffice-bin
-      kdenlive
-      mediainfo # optional dependecy for kdenlive
-      glaxnimate # required dependecy for kdenlive
-      droidcam
-      # collision
-      nur.repos.foolnotion.upscayl
-      prismlauncher
-      github-desktop
-      wine-wayland
-      qbittorrent
-      shell-genie
       discord
-      betterdiscordctl
+      # gimp
+      # drawing
+      # #handbrake
+      # audacity
+      # inkscape
+      onlyoffice-bin
+      droidcam
+      github-desktop
+      shell-genie
       pop-launcher
       distrobox
       docker-compose
+      thefuck
+      unstable.mission-center # stable version bestaat nog niet
+      #wine-wayland
+      #protonup-qt
+      #unstable.antimicrox
+      #qbittorrent
+      # collision
+      #qpwgraph
 
       # Extensions
+      gnomeExtensions.another-window-session-manager
       gnomeExtensions.blur-my-shell
-      gnomeExtensions.pano
-      gnomeExtensions.nothing-to-say
-      gnomeExtensions.grand-theft-focus
-      gnomeExtensions.hue-lights
-      gnomeExtensions.espresso
+      gnomeExtensions.worksets # customised workspaces
       gnomeExtensions.just-perfection
+      gnomeExtensions.nothing-to-say
+      gnomeExtensions.one-click-bios
       gnomeExtensions.openweather
+      gnomeExtensions.pano
       gnomeExtensions.quick-settings-tweaker
-      gnomeExtensions.desktop-cube
-      gnomeExtensions.gesture-improvements
-      gnomeExtensions.rounded-corners
+      gnomeExtensions.reorder-workspaces
+      gnomeExtensions.smart-auto-move
+      unstable.gnomeExtensions.solaar-extension # stable version does not excist yet (still needs to be tested)
+      gnomeExtensions.top-bar-organizer
+      gnomeExtensions.translate-assistant
+      gnomeExtensions.auto-move-windows # verschil smart-auto-move? (nog bekijken)
+      gnomeExtensions.custom-accent-colors # misschien niet nodig
       gnomeExtensions.dash-to-dock
-      gnomeExtensions.legacy-gtk3-theme-scheme-auto-switcher
       gnomeExtensions.gnome-40-ui-improvements
       gnomeExtensions.gsconnect
+      gnomeExtensions.launch-new-instance # misschien niet nodig
+      gnomeExtensions.legacy-gtk3-theme-scheme-auto-switcher
       gnomeExtensions.pop-shell
+      gnomeExtensions.forge
+      gnomeExtensions.removable-drive-menu
+      gnomeExtensions.user-themes # misschien niet nodig
+      gnomeExtensions.espresso 
+      gnomeExtensions.grand-theft-focus
+      gnomeExtensions.hue-lights
+      gnomeExtensions.gesture-improvements # nog bekijken
+      gnomeExtensions.rounded-corners # misschien niet nodig
 
+      
       # Obs plugins
-      obs-studio-plugins.obs-move-transition
-      obs-studio-plugins.obs-backgroundremoval
-      obs-studio-plugins.input-overlay
-      obs-studio
+      # obs-studio-plugins.obs-move-transition
+      # obs-studio-plugins.obs-backgroundremoval
+      # obs-studio-plugins.input-overlay
+      # obs-studio
 
   	];
 
@@ -344,16 +356,30 @@ in
       enable = true;
       shellAliases = {
         update="dconf dump / | dconf2nix > /etc/nixos/dconf.nix && sudo nixos-rebuild switch";
+        ask = "shell-genie ask";
+        cls = "clear";
         arch="distrobox-enter --root arch";
       };
       interactiveShellInit = ''
         set fish_greeting # Disable greeting
       '';
-      shellInit = "disfetch\n starship init fish | source";
+      shellInit = "disfetch\n starship init fish | source\n thefuck --alias | source ";
       plugins = [
       ];
     };
 
+    # xdg
+
+    xdg.mimeApps = {
+      enable = true;
+      # default applications
+      associations.added = {
+        "inode/directory" = ["org.gnome.Nautilus.desktop"];
+      };
+      defaultApplications = {
+        "inode/directory" = ["org.gnome.Nautilus.desktop"];
+      };
+    };
     # Configs
 
     # Starship
@@ -551,11 +577,11 @@ in
     # Fish
     fish.enable = true;
     noisetorch.enable = true; # needs to be system program
-    steam = {
-      enable = true;
-      remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-      dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    };
+    # steam = {
+    #   enable = true;
+    #   remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    #   dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    #};
     dconf.enable = true;
   };
 
@@ -565,10 +591,6 @@ in
     openssh.enable = true; # Enable the OpenSSH daemon.
     gnome.gnome-remote-desktop.enable = true;
     xrdp.enable = true;
-    udev.extraRules = ''
-    #Enable user access to keyboard using uinput event generator
-    SUBSYSTEM=="misc", KERNEL=="uinput", OPTIONS+="static_node=uinput", TAG+="uaccess"
-    '';
   };
   
   # Maintenence
