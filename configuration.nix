@@ -576,7 +576,7 @@ in
   programs = {
     # Fish
     fish.enable = true;
-    noisetorch.enable = true; # needs to be system program
+    # noisetorch.enable = true; # needs to be system program
     # steam = {
     #   enable = true;
     #   remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
