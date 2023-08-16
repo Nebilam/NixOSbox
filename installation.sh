@@ -4,7 +4,7 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 clear
-echo "${bold}Welcome to the first part of the installation of nixos${normal}"
+echo "${bold}Welcome to the first part of the installation of NixOS${normal}"
 sleep 1
 echo "You ran trough the installation and rebooted"
 sleep 1
